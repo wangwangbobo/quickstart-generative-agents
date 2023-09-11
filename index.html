@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="计算巢是阿里云开放给企业应用服务商的服务管理平台。服务商能够在计算巢上发布私有化部署服务，为其客户提供云上软件一键部署的能力；同时也支持全托管模式的服务，赋能服务商托管其客户资源。">
+  <title>Generative Agents社区版部署文档 - Aliyun 计算巢 x Demo</title>
+
+  <link rel="shortcut icon" href="img/favicon.ico">
+
+  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css">
+  <link rel="stylesheet" href="css/theme.css">
+
+  
+
+  
+  
+
+  
+    <script src="search/main.js"></script>
+  
+
+  
+
+</head>
+
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="nav-inner">
+        <div class="logo">
+          <img src="./img/logo-2x.png">
+        </div>
+        <div class="nav-list">
+          <ul>
+          
+              <li><a href="#generative-agents">Generative Agents社区版部署文档</a></li>
+              
+                  <li><a href="#_1">概述</a></li>
+                  
+              
+                  <li><a href="#_2">实例说明</a></li>
+                  
+              
+                  <li><a href="#_3">部署流程</a></li>
+                  
+                      <li class="li-h3"><a href="#0">0. 准备工作</a></li>
+                  
+                      <li class="li-h3"><a href="#1">1. 部署入口</a></li>
+                  
+                      <li class="li-h3"><a href="#2-generative-agents">2. 创建Generative Agents服务实例</a></li>
+                  
+                      <li class="li-h3"><a href="#3-generative-agents">3. 启动Generative Agents服务</a></li>
+                  
+                      <li class="li-h3"><a href="#_4">更多功能</a></li>
+                  
+              
+          
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      
+      <div class="content-inner">        
+        
+        <h1 id="generative-agents">Generative Agents社区版部署文档</h1>
+<h2 id="_1">概述</h2>
+<p>Generative Agents社区版是基于2023年4月美国斯坦福大学和Google Research所属的研究人员发表的论文“Generative Agents: Interactive Simulacra of HumanBehavior”的开源代码部署的服务。这项研究通过使用ChatGPT等技术，模拟了25个角色在一个虚拟世界中一起生活的情景。这些角色具有不同的虚构人格，并通过自发的行动展开活动。他们在一个复古RPG游戏风格的环境中，拥有各自独立的生活模式，从日常起床、工作到玩耍等。角色之间可以通过自然语言进行交流，并通过相遇和对话交换信息并形成记忆。<br />
+在一项评估中，这些生成的代理人产生可信的个人和紧急的社会行为：例如，从一个用户指定的概念开始一个代理人想要举办情人节聚会，这些代理人在接下来的两天里主动地向聚会发出邀请，结交新的熟人，在聚会上互相约约，并协调在合适的时间一起参加聚会。 论文证明，通过融合大型语言模型与计算，交互代理，这项工作引入了建筑和交互模式使可信的模拟人类行为。
+计算巢目前已上架了基于开源代码的Generative Agents，您只需在创建页选配好云服务器（ECS）参数，计算巢将自动为您创建带有Generative Agents的云服务器。创建完成后，您只需登陆ECS即可使用体验Generative Agents虚拟社区。本文向您介绍如何开通计算巢上的Generative Agents服务以及部署流程和使用说明。使用期间若发现任何问题，欢迎反馈交流。
+<img alt="generate-agent-14" src="generate-agent-14.png" /></p>
+<h2 id="_2">实例说明</h2>
+<p>Generative Agents部署的为社区开源版本，源码参考<a href="https://github.com/joonspk-research/generative_agents">Github Repo</a>。</p>
+<h2 id="_3">部署流程</h2>
+<h3 id="0">0. 准备工作</h3>
+<p>在正式开始使用前，您需要一个阿里云账号，对ECS、VPC等资源进行访问和创建操作。</p>
+<ul>
+<li>若您使用个人账号，可以直接创建服务实例</li>
+<li>若您使用RAM用户创建服务实例，且是第一次使用阿里云计算巢<ul>
+<li>需要在创建服务实例前，对使用的RAM用户的账号添加相应资源的权限。添加RAM权限的详细操作，请参见<a href="https://help.aliyun.com/document_detail/121945.html">为RAM用户授
+  权</a>。所需权限如下表所示。</li>
+<li>且需要授权创建关联角色，参考下图，选中 <strong>同意授权并创建关联角色</strong></li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>权限策略名称</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AliyunECSFullAccess</td>
+<td>管理云服务器服务（ECS）的权限</td>
+</tr>
+<tr>
+<td>AliyunVPCFullAccess</td>
+<td>管理专有网络（VPC）的权限</td>
+</tr>
+<tr>
+<td>AliyunROSFullAccess</td>
+<td>管理资源编排服务（ROS）的权限</td>
+</tr>
+<tr>
+<td>AliyunComputeNestUserFullAccess</td>
+<td>管理计算巢服务（ComputeNest）的用户侧权限</td>
+</tr>
+<tr>
+<td>AliyunCloudMonitorFullAccess</td>
+<td>管理云监控（CloudMonitor）的权限</td>
+</tr>
+</tbody>
+</table>
+<p>其次，由于Generative Agents底层调用了OpenAI的text-davinci-003模型，因此还需要您提前注册OpenAI的账号，此账号具有调用OpenAI API的权限。</p>
+<h3 id="1">1. 部署入口</h3>
+<p>您可以在阿里云计算巢自行搜索“Generative Agents社区版”，也可以通过下述部署链接快速到达。</p>
+<p><a href="https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstanceCreate?ServiceId=service-744d0d3d4a4548a2812b">部署链接</a>=</p>
+<h3 id="2-generative-agents">2. 创建Generative Agents服务实例</h3>
+<h4 id="21">2.1 参数列表</h4>
+<p>您在创建服务实例的过程中，需要配置服务实例信息的参数列表，具体如下。</p>
+<table>
+<thead>
+<tr>
+<th>参数组</th>
+<th>参数项</th>
+<th>示例</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>服务实例名称</td>
+<td>N/A</td>
+<td>test</td>
+<td>实例的名称</td>
+</tr>
+<tr>
+<td>地域</td>
+<td>N/A</td>
+<td>华东1（杭州）</td>
+<td>选中服务实例的地域，建议就近选中，以获取更好的网络延时。</td>
+</tr>
+<tr>
+<td>付费类型配置</td>
+<td>付费类型</td>
+<td>按量付费</td>
+<td>按实际情况选择付费类型</td>
+</tr>
+<tr>
+<td>ECS实例配置</td>
+<td>实例类型</td>
+<td>ecs.g6.large</td>
+<td>按实际情况选择实例规格</td>
+</tr>
+<tr>
+<td>ECS实例登录信息</td>
+<td>实例密码</td>
+<td><strong><em>*</em></strong>*</td>
+<td>设置实例密码。长度8~30个字符，必须包含三项（大写字母、小写字母、数字、 ()`~!@#$%^&amp;*_-+={}[]:;'&lt;&gt;,.?/</td>
+</tr>
+<tr>
+<td>OpenAI 密钥配置</td>
+<td>OpenAI Key</td>
+<td>sk-xxx</td>
+<td>OpenAI 密钥，使用Generative Agents将从密钥对应账户扣费，此密钥由OpenAI提供，阿里云不对此密钥做任何处理。默认使用text-davinci-003模型，登陆访问 <a href="https://openai.com/">OpenAI 官网</a>。</td>
+</tr>
+<tr>
+<td>可用区配置</td>
+<td>可用区</td>
+<td>可用区I</td>
+<td>地域下的不同可用区域，确保实例非空</td>
+</tr>
+<tr>
+<td>VPC设置</td>
+<td>是否新建VPC</td>
+<td>是</td>
+<td>若是，计算巢将自动创建VPC和Vswitch，若否，则需要填入已经创建好的VPC和Vswitch</td>
+</tr>
+<tr>
+<td>VPC设置</td>
+<td>专有网络VPC实例ID</td>
+<td>vpc-xxx</td>
+<td>按实际情况，选择专有网络的ID。</td>
+</tr>
+<tr>
+<td>VPC设置</td>
+<td>交换机实例ID</td>
+<td>vsw-xxx</td>
+<td>按实际情况，选择交换机ID。若找不到交换机, 可尝试切换地域和可用区。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="22">2.2 具体步骤</h4>
+<p>创建服务按如下步骤进行:</p>
+<ul>
+<li>创建服务实例，填写服务实例名称（非必填）</li>
+<li>选择地域，如下图中“新加坡”</li>
+</ul>
+<p><img alt="generate-agent-1" src="generate-agent-1.png" /></p>
+<ul>
+<li>选择实例类型: 默认选择ecs.g6.large</li>
+<li>
+<p>配置实例的密码
+<img alt="generate-agent-12" src="generate-agent-12.png" /></p>
+</li>
+<li>
+<p>OpenAI密钥配置：输入OpenAI账号所对应的OpenAIKey，格式为“sk-……”。计算巢仅将此OPENAIKey传入Generative Agents作为调用API凭证，不会执行如记录、校验、鉴权等任何操作。为保证后续正常使用，请保证此Key所对应账号具有访问权限且余额充足。
+<img alt="generate-agent-3" src="generate-agent-3.png" /></p>
+</li>
+<li>选择部署区域，如下图中“可用区A”
+<img src="generate-agent-2.png" alt="generate-agent-2" width="1200"></li>
+<li>
+<p>VPC设置：可选新建或填入已有VPC/Vswitch
+<img alt="generate-agent-4" src="generate-agent-4.png" /></p>
+</li>
+<li>
+<p>点击下一步，进入订单确认页面</p>
+</li>
+<li>勾选“我已阅读并同意《计算巢服务协议》”中的复选框</li>
+<li>点击左下角立即创建，即可创建服务实例
+<img src="generate-agent-5.png" alt="generate-agent-5" width="1200"></li>
+</ul>
+<h3 id="3-generative-agents">3. 启动Generative Agents服务</h3>
+<p>查看服务实例：服务实例创建成功后，部署时间需要1～2分钟。部署完成后，页面上可以看到对应的服务实例，如下图
+<img alt="generate-agent-6" src="generate-agent-6.png" /></p>
+<p>点击该服务实例可进入服务实例详情。
+<img alt="generate-agent-7" src="generate-agent-7.png" /></p>
+<p>点击登录地址可以在浏览器看到如下界面，此时表示前端服务已经成功启动：
+<img alt="generate-agent-8" src="generate-agent-8.png" /></p>
+<p>接下来需要通过命令行交互式方式启动后端服务，首先需要登陆Ecs实例中，点击：资源-远程连接-免密登陆：
+<img alt="generate-agent-9" src="generate-agent-9.png" /></p>
+<p>选择会话管理-云助手后点击确定，即可进入ECS：
+<img alt="generate-agent-10" src="generate-agent-10.png" /></p>
+<p>进入实例后执行以下命令启动后端模拟器服务:</p>
+<pre><code>    sudo su
+    conda activate agent
+    cd /home/ecs-assist-user/generative_agents/reverie/backend_server
+    python reverie.py
+</code></pre>
+<p>执行成功后会看到如下输出,出现命令行提示符，询问以下内容：" "Enter the name of the forked simulation: ":
+<img src="generate-agent-11.png" alt="generate-agent-11" width="1200">
+要启动一个包含Isabella Rodriguez、Maria Lopez和Klaus Mueller的3个代理的模拟，请输入以下内容：</p>
+<pre><code>base_the_ville_isabella_maria_klaus
+</code></pre>
+<p>然后将提示："Enter the name of the new simulation:"。输入任何名称来表示您当前的模拟（例如，只输入"mytest-simulation"即可）,注意每次启动需要输入不同的名字，否则会启动失败。
+如果想输入一个已经存在的名称且能正常启动，需要提前删除
+/home/ecs-assist-user/generative_agents/environment/frontend_server/storage目录下已经创建过的同名文件夹。</p>
+<pre><code>simulation-test-1
+</code></pre>
+<p>在您的浏览器上，导航到http://{{实例公网IP}}:8000/simulator_home。您应该可以看到Smallville的地图，以及地图上活动代理的列表。您可以使用键盘箭头在地图上移动。请保持此标签打开。要运行模拟，请在响应“输入选项”提示时在您的模拟服务器中键入以下命令。</p>
+<pre><code>run &lt;step-count&gt;
+</code></pre>
+<p>请注意，您需要将上述的替换为表示您想要模拟的游戏步骤数量的整数。例如，如果您想要模拟100个游戏步骤，您应该输入run 100。一个游戏步骤代表游戏中的10秒时间。 您的模拟应该在运行中，您将在浏览器中看到代理在地图上移动（您可以通过键盘上下左右按键查看地图）。一旦模拟运行完成，"Enter option"提示将重新出现。此时，您可以通过重新输入run命令并输入您想要的游戏步骤来模拟更多的步骤，通过输入exit来退出模拟而不保存，或者通过输入fin来保存并退出。 下次运行模拟服务器时，您可以通过将您的模拟名称作为forked simulation提供，来访问保存的模拟。这将允许您从离开的地方重新启动模拟。
+<img src="generate-agent-13.png" alt="generate-agent-13" width="1200"></p>
+<h3 id="_4">更多功能</h3>
+<ul>
+<li>请参考<a href="https://github.com/joonspk-research/generative_agents">Generative Agents GitHub官方文档</a></li>
+</ul>
+        
+      </div>
+
+      <div class="copyrights">© 2009-2022 Aliyun.com 版权所有</div>
+    </div>
+  </div>
+  
+  <!--
+  MkDocs version      : 1.5.2
+  Docs Build Date UTC : 2023-09-11 06:59:33.898766+00:00
+  -->
+</body>
+</html>
