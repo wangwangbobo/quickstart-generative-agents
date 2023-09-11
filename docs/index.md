@@ -35,7 +35,7 @@ Generative Agents部署的为社区开源版本，源码参考[Github Repo](http
 
 您可以在阿里云计算巢自行搜索“Generative Agents社区版”，也可以通过下述部署链接快速到达。
 
-[部署链接](https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstanceCreate?spm=5176.24779694.0.0.5fce4d22CBiFXX&ServiceId=service-744d0d3d4a4548a2812b)
+[部署链接](https://computenest.console.aliyun.com/user/cn-hangzhou/serviceInstanceCreate?ServiceId=service-744d0d3d4a4548a2812b)=
 
 ### 2. 创建Generative Agents服务实例
 
